@@ -1,4 +1,7 @@
 package com.sahajdeepsingh.onetabread.repository;
 
-public class BookRepository {
+import com.sahajdeepsingh.onetabread.model.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookRepository extends JpaRepository<Book, Long> {
 }

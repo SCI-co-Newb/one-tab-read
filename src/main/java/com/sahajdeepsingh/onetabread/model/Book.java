@@ -7,7 +7,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+//@Getter
+//@Setter
 @Entity
 @Table(name = "books")
 public class Book {
@@ -17,7 +18,6 @@ public class Book {
     @Column(name = "book_id")
     private Long id;
 
-    @Setter
     @Column(name = "title", nullable = false, unique = true)
     private String title;
 
@@ -31,4 +31,44 @@ public class Book {
     @OneToMany(mappedBy = "book", targetEntity = URIHistory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("visitedAt DESC")
     private List<URIHistory> history = new ArrayList<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public URIPattern getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(URIPattern pattern) {
+        this.pattern = pattern;
+    }
+
+    public List<URIHistory> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<URIHistory> history) {
+        this.history = history;
+    }
 }

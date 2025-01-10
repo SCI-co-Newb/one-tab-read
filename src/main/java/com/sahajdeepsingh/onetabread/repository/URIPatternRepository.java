@@ -1,4 +1,7 @@
 package com.sahajdeepsingh.onetabread.repository;
 
-public class URIPatternRepository {
+import com.sahajdeepsingh.onetabread.model.URIPattern;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface URIPatternRepository extends JpaRepository<URIPattern, String> {
 }
