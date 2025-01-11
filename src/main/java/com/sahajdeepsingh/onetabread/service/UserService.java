@@ -46,4 +46,6 @@ public class UserService {
         }
         return null;
     }
+
+    // probably another 1-2 put methods to just change the password or username
 }
