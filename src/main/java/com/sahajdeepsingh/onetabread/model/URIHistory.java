@@ -1,13 +1,9 @@
 package com.sahajdeepsingh.onetabread.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-//@Getter
-//@Setter
 @Entity
 @Table(name = "urihistories")
 public class URIHistory {
@@ -17,14 +13,14 @@ public class URIHistory {
     @Column(name = "hist_id")
     private Long id;
 
-    @Column(name = "uri")
+    @Column(name = "uri", nullable = false)
     private String uri;
 
-    @Column(name = "visitedAt")
+    @Column(name = "visitedAt", nullable = false)
     private LocalDateTime visitedAt;
 
     @ManyToOne
-    @JoinColumn(name = "book")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     public Long getId() {

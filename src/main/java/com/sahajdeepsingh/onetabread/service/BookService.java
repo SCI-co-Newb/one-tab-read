@@ -44,13 +44,4 @@ public class BookService {
         }
         return null;
     }
-
-    public Book updateBookTitle(Book book) {
-        Book bookToUpdate = bookRepository.findById(book.getId()).orElse(null);
-        if (bookToUpdate != null) {
-            bookToUpdate.setTitle(book.getTitle());
-            return bookRepository.save(bookToUpdate);
-        }
-        return null;
-    }
 }

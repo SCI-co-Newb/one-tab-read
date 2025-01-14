@@ -1,11 +1,7 @@
 package com.sahajdeepsingh.onetabread.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-//@Getter
-//@Setter
 @Entity
 @Table(name = "uripatterns")
 public class URIPattern {
@@ -15,11 +11,11 @@ public class URIPattern {
     @Column(name = "patt_id")
     private Long id;
 
-    @Column(name = "pattern")
+    @Column(name = "pattern", nullable = false)
     private String pattern;
 
     @OneToOne
-    @JoinColumn(name = "book")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     public Long getId() {

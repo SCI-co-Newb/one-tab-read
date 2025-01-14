@@ -1,14 +1,10 @@
 package com.sahajdeepsingh.onetabread.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//@Getter
-//@Setter
 @Entity
 @Table(name = "books")
 public class Book {
@@ -18,11 +14,11 @@ public class Book {
     @Column(name = "book_id")
     private Long id;
 
-    @Column(name = "title", nullable = false, unique = true)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToOne(mappedBy = "book", targetEntity = URIPattern.class, cascade = CascadeType.ALL, orphanRemoval = true)
