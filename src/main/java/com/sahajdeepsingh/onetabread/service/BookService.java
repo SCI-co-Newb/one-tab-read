@@ -1,7 +1,9 @@
 package com.sahajdeepsingh.onetabread.service;
 
 import com.sahajdeepsingh.onetabread.model.Book;
+import com.sahajdeepsingh.onetabread.model.User;
 import com.sahajdeepsingh.onetabread.repository.BookRepository;
+import com.sahajdeepsingh.onetabread.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -11,15 +13,22 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
     // POST method
     @Transactional
-    public Book save(Book book) {
-        return bookRepository.save(book);
+    public Book save(Long user_id, Book book) {
+        User user = userRepository.findById(user_id).orElse(null);
+        if (user != null) {
+            book.setUser(user);
+            return bookRepository.save(book);
+        }
+        return null;
     }
 
     // GET methods
