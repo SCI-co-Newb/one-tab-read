@@ -24,7 +24,7 @@ public class BookService {
     }
 
     public Book findByTitleAndUser(String title, Long user_id) {
-        return bookRepository.findByTitleAndUserId(title, user_id);
+        return bookRepository.findByTitleAndUserId(title, user_id).orElse(null);
     }
 
     // DELETE method

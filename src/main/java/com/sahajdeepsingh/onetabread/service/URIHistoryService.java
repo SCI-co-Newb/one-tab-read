@@ -25,7 +25,7 @@ public class URIHistoryService {
     }
 
     public URIHistory findByUriAndBookId(String uri, Long book_id) {
-        return uriHistoryRepository.findByUriAndBookId(uri, book_id);
+        return uriHistoryRepository.findByUriAndBookId(uri, book_id).orElse(null);
     }
 
     // DELETE method

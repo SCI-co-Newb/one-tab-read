@@ -3,8 +3,10 @@ package com.sahajdeepsingh.onetabread.repository;
 import com.sahajdeepsingh.onetabread.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+import java.util.Optional;
 
-    User findByUsernameAndPassword(String username, String password);
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUsername(String username);
+
+    Optional<User> findByUsernameAndPassword(String username, String password);
 }
