@@ -2,7 +2,10 @@ package com.sahajdeepsingh.onetabread.service;
 
 import com.sahajdeepsingh.onetabread.model.Book;
 import com.sahajdeepsingh.onetabread.repository.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BookService {
@@ -14,31 +17,32 @@ public class BookService {
     }
 
     // POST method
+    @Transactional
     public Book save(Book book) {
         return bookRepository.save(book);
     }
 
     // GET methods
-    public Book findById(Long id) {
-        return bookRepository.findById(id).orElse(null);
-    }
+    public Book findByIdAndUser(Long id, Long user_id) {
+        return bookRepository.findByIdAndUserId(id, user_id).orElse(null);
+    }   // only this way so users can only access their own books
 
-    public Book findByTitleAndUser(String title, Long user_id) {
-        return bookRepository.findByTitleAndUserId(title, user_id).orElse(null);
+    public List<Book> getBooksByUserId(Long user_id) {
+        return bookRepository.findAllByUserId(user_id);
     }
 
     // DELETE method
+    @Transactional
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
     }
 
     // PUT methods
-    public Book updateBook(Book book) {
-        Book bookToUpdate = bookRepository.findById(book.getId()).orElse(null);
+    @Transactional
+    public Book updateBook(Long user_id, Book book) {
+        Book bookToUpdate = bookRepository.findByIdAndUserId(user_id, book.getId()).orElse(null);
         if (bookToUpdate != null) {
             bookToUpdate.setTitle(book.getTitle());
-            bookToUpdate.setHistory(book.getHistory());
-            bookToUpdate.setUser(book.getUser());
             bookToUpdate.setPattern(book.getPattern());
             return bookRepository.save(bookToUpdate);
         }
