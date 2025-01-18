@@ -32,7 +32,7 @@ public class BookService {
     }
 
     // GET methods
-    public Book findByIdAndUser(Long id, Long user_id) {
+    public Book findByIdAndUserId(Long id, Long user_id) {
         return bookRepository.findByIdAndUserId(id, user_id).orElse(null);
     }   // only this way so users can only access their own books
 
