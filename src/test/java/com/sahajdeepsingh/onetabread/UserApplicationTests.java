@@ -49,17 +49,19 @@ class UserApplicationTests {
     }
 
     @Test
-    void shouldFindUserByUsername() {
+    void shouldFindUserByUsernameAndPassword() {
         User newUser = new User();
         newUser.setUsername("adminFindByUsername");
         newUser.setPassword("adminFindByUsername");
         restTemplate.postForEntity("/users", newUser, Void.class);
 
-        ResponseEntity<User> responseEntity = restTemplate.getForEntity("/users/findByUsername?requestedUsername={username}", User.class, newUser.getUsername());
+        ResponseEntity<User> responseEntity = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
+                User.class, newUser.getUsername(), newUser.getPassword());
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
         assertThat(responseEntity.getBody().getUsername()).isEqualTo("adminFindByUsername");
+        assertThat(responseEntity.getBody().getPassword()).isEqualTo("adminFindByUsername");
     }
 
     @Test
