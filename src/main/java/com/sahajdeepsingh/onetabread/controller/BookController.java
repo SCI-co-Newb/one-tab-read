@@ -2,7 +2,6 @@ package com.sahajdeepsingh.onetabread.controller;
 
 import com.sahajdeepsingh.onetabread.model.Book;
 import com.sahajdeepsingh.onetabread.service.BookService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,7 +33,7 @@ public class BookController {
     }
 
     @GetMapping("/{book_id}")
-    public ResponseEntity<Book> getBook(@PathVariable Long user_id, @PathVariable Long book_id) {
+    public ResponseEntity<Book> getBookByIdAndUserId(@PathVariable Long user_id, @PathVariable Long book_id) {
         Book book = bookService.findByIdAndUserId(book_id, user_id);
 
         if(book != null) {
@@ -45,7 +44,7 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getBooks(@PathVariable Long user_id) {
+    public ResponseEntity<List<Book>> getBooksByUserId(@PathVariable Long user_id) {
         List<Book> books = bookService.getBooksByUserId(user_id);
 
         if(books != null) {

@@ -28,7 +28,7 @@ public class UserController {
         if (user != null) {
             // 200 meaning OK user is found and redact password
             user.setPassword("*redacted*");
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok().body(user);
         } else {
             // 404 meaning not founds
             return ResponseEntity.notFound().build();
@@ -42,7 +42,7 @@ public class UserController {
 
         if (user != null) {
             // 200 meaning OK user is found
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok().body(user);
         } else {
             // 404 meaning not founds
             return ResponseEntity.notFound().build();

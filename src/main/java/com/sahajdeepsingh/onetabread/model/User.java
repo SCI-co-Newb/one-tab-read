@@ -1,5 +1,6 @@
 package com.sahajdeepsingh.onetabread.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", targetEntity = Book.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Book> books = new ArrayList<>();
 
     public Long getId() {

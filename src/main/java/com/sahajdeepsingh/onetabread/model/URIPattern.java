@@ -1,5 +1,6 @@
 package com.sahajdeepsingh.onetabread.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,7 @@ public class URIPattern {
 
     @OneToOne
     @JoinColumn(name = "book_id", nullable = false)
+    @JsonBackReference
     private Book book;
 
     public Long getId() {

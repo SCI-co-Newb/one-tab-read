@@ -1,5 +1,7 @@
 package com.sahajdeepsingh.onetabread.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -19,13 +21,16 @@ public class Book {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @OneToOne(mappedBy = "book", targetEntity = URIPattern.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private URIPattern pattern;
 
     @OneToMany(mappedBy = "book", targetEntity = URIHistory.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("visitedAt DESC")
+    @JsonManagedReference
     private List<URIHistory> history = new ArrayList<>();
 
     public Long getId() {
