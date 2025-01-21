@@ -143,4 +143,21 @@ public class BookApplicationTests {
         assertThat(responseEntity.getBody().getId()).isEqualTo(bookId);
         assertThat(responseEntity.getBody().getTitle()).isEqualTo(book.getTitle());
     }
+
+    @Test
+    void shouldDeleteBook() {
+        Book book = new Book();
+        book.setTitle("shouldDeleteBook");
+
+        ResponseEntity<Void> postResponse = restTemplate.postForEntity("/users/{user_id}/books", book, Void.class, userId);
+
+        String location = Objects.requireNonNull(postResponse.getHeaders().getLocation()).getPath();
+        Long bookId = (Long) Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
+
+        restTemplate.delete("/users/{user_id}/books/{id}", userId, bookId);
+
+        ResponseEntity<Book> responseEntity = restTemplate.getForEntity("/users/{user_id}/books/{id}", Book.class, userId, bookId);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }
