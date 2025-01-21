@@ -54,13 +54,13 @@ public class BookController {
         }
     }
 
-    @PutMapping("/updateBook")
+    @PutMapping
     public ResponseEntity<Void> updateBook(@PathVariable Long user_id, @RequestBody Book book) {
         if (book == null) {
             return ResponseEntity.notFound().build();
         }
 
-        Book savedBook = bookService.save(user_id, book);
+        Book savedBook = bookService.updateBook(user_id, book);
 
         if(savedBook != null) {
             return ResponseEntity.ok().build();

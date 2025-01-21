@@ -73,9 +73,8 @@ class UserApplicationTests {
 
         String location = Objects.requireNonNull(postResponse.getHeaders().getLocation()).getPath();
         Long newUserId = (Long) Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
+        newUser.setId(newUserId);   // since the object doesn't know the generated id
 
-        // since the object doesn't know the generated id
-        newUser.setId(newUserId);
         newUser.setUsername("adminUpdateUpdate");
         newUser.setPassword("adminUpdateUpdate");
         restTemplate.put("/users/updateUser", newUser);

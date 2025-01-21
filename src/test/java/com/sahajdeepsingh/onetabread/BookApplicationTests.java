@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,6 +104,37 @@ public class BookApplicationTests {
 
         String location = Objects.requireNonNull(postResponse.getHeaders().getLocation()).getPath();
         Long bookId = (Long) Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
+
+        ResponseEntity<Book> responseEntity = restTemplate.getForEntity("/users/{user_id}/books/{id}", Book.class, userId, bookId);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getId()).isEqualTo(bookId);
+        assertThat(responseEntity.getBody().getTitle()).isEqualTo(book.getTitle());
+    }
+
+    @Test
+    void shouldUpdateBook() {
+        Book book = new Book();
+        book.setTitle("shouldUpdateBook1");
+
+        ResponseEntity<Void> postResponse = restTemplate.postForEntity("/users/{user_id}/books", book, Void.class, userId);
+
+        String location = Objects.requireNonNull(postResponse.getHeaders().getLocation()).getPath();
+        Long bookId = (Long) Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
+        book.setId(bookId); // since book doesn't know the generated id
+
+        book.setTitle("shouldUpdateBook2");
+
+        ResponseEntity<Void> putEntity = restTemplate.exchange(
+                "/users/{user_id}/books",
+                HttpMethod.PUT,
+                new HttpEntity<>(book),
+                Void.class,
+                userId
+        );
+
+        assertThat(putEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         ResponseEntity<Book> responseEntity = restTemplate.getForEntity("/users/{user_id}/books/{id}", Book.class, userId, bookId);
 

@@ -49,7 +49,7 @@ public class BookService {
     // PUT methods
     @Transactional
     public Book updateBook(Long user_id, Book book) {
-        Book bookToUpdate = bookRepository.findByIdAndUserId(user_id, book.getId()).orElse(null);
+        Book bookToUpdate = bookRepository.findByIdAndUserId(book.getId(), user_id).orElse(null);
         if (bookToUpdate != null) {
             bookToUpdate.setTitle(book.getTitle());
             bookToUpdate.setPattern(book.getPattern());
