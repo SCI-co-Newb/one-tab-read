@@ -17,7 +17,7 @@ public class URIHistory {
     @Column(name = "uri", nullable = false)
     private String uri;
 
-    @Column(name = "visitedAt", nullable = false)
+    @Column(name = "visited_at", nullable = false)
     private LocalDateTime visitedAt;
 
     @ManyToOne

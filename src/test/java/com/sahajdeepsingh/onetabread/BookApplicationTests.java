@@ -2,6 +2,7 @@ package com.sahajdeepsingh.onetabread;
 
 import com.sahajdeepsingh.onetabread.model.Book;
 import com.sahajdeepsingh.onetabread.model.User;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,33 +11,60 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 
+import javax.sql.DataSource;
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = OneTabReadApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BookApplicationTests {
 
     @Autowired
     TestRestTemplate restTemplate;
 
+    @Autowired
+    private DataSource dataSource;
+
+    @Test
+    void testDatabaseConnection() throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            assertThat(connection).isNotNull();
+            System.out.println("Database connected successfully: " + connection.getMetaData().getURL());
+        }
+    }
+
     @Test
     void shouldCreateBook() {
-        Book book = new Book();
-        book.setTitle("shouldCreateBook");
-
         User user = new User();
         user.setUsername("for_book_testing");
         user.setPassword("for_book_testing");
 
+        restTemplate.delete("/users/deleteUser?requestedUsername={username}&requestedPassword={password}",
+                user.getUsername(), user.getPassword());
+
+        ResponseEntity<User> responseEntityUserDelete = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
+                User.class, user.getUsername(), user.getPassword());
+
+        assertThat(responseEntityUserDelete.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        restTemplate.postForEntity("/users", user, User.class);
+
         ResponseEntity<User> responseEntityUser = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
                 User.class, user.getUsername(), user.getPassword());
 
+        assertThat(responseEntityUser.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntityUser.getBody()).isNotNull();
+
         Long userId = responseEntityUser.getBody().getId();
 
-        System.out.println(responseEntityUser.getBody().getId());
+        Book book = new Book();
+        book.setTitle("shouldCreateBook");
 
         ResponseEntity<Book> responseEntityBook = restTemplate.postForEntity("/users/{user_id}/books", book, Book.class, userId);
 
@@ -52,6 +80,8 @@ public class BookApplicationTests {
         User user = new User();
         user.setUsername("for_book_testing");
         user.setPassword("for_book_testing");
+
+        restTemplate.postForEntity("/users", user, User.class);
 
         ResponseEntity<User> responseEntityUser = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
                 User.class, user.getUsername(), user.getPassword());
@@ -71,5 +101,7 @@ public class BookApplicationTests {
 
         assertThat(responseEntities.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntities.getBody()).containsExactlyInAnyOrder(book1, book2);
+
+        restTemplate.delete("/users/deleteUserBy?requestedUsername={username}&requestedPassword={password}", user.getUsername(), user.getPassword());
     }*/
 }
