@@ -3,6 +3,7 @@ package com.sahajdeepsingh.onetabread;
 import com.sahajdeepsingh.onetabread.model.Book;
 import com.sahajdeepsingh.onetabread.model.User;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,19 +29,14 @@ public class BookApplicationTests {
     @Autowired
     TestRestTemplate restTemplate;
 
-    @Autowired
-    private DataSource dataSource;
+    Long userId;
 
-    @Test
-    void testDatabaseConnection() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            assertThat(connection).isNotNull();
-            System.out.println("Database connected successfully: " + connection.getMetaData().getURL());
-        }
-    }
-
-    @Test
-    void shouldCreateBook() {
+    @BeforeEach
+    /*
+    * Resets the user being used for this test class by deleting then recreating.
+    * This cascade deletes all the books associated with the user, making a clean slate for each test.
+    */
+    void setUp() {
         User user = new User();
         user.setUsername("for_book_testing");
         user.setPassword("for_book_testing");
@@ -61,8 +57,11 @@ public class BookApplicationTests {
         assertThat(responseEntityUser.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntityUser.getBody()).isNotNull();
 
-        Long userId = responseEntityUser.getBody().getId();
+        userId = responseEntityUser.getBody().getId();
+    }
 
+    @Test
+    void shouldCreateBook() {
         Book book = new Book();
         book.setTitle("shouldCreateBook");
 
@@ -74,20 +73,9 @@ public class BookApplicationTests {
         assertThat(uriLocation).isNotNull();
         assertThat(uriLocation.getPath()).startsWith("/users/" + userId + "/books");
     }
-/*
+
     @Test
     void shouldGetBooksByUserId() {
-        User user = new User();
-        user.setUsername("for_book_testing");
-        user.setPassword("for_book_testing");
-
-        restTemplate.postForEntity("/users", user, User.class);
-
-        ResponseEntity<User> responseEntityUser = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
-                User.class, user.getUsername(), user.getPassword());
-
-        Long userId = responseEntityUser.getBody().getId();
-
         Book book1 = new Book();
         book1.setTitle("shouldGetBooksByUserId1");
         Book book2 = new Book();
@@ -100,8 +88,8 @@ public class BookApplicationTests {
                 null, new ParameterizedTypeReference<List<Book>>() {}, userId);
 
         assertThat(responseEntities.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntities.getBody()).containsExactlyInAnyOrder(book1, book2);
-
-        restTemplate.delete("/users/deleteUserBy?requestedUsername={username}&requestedPassword={password}", user.getUsername(), user.getPassword());
-    }*/
+        assertThat(responseEntities.getBody())
+                .extracting(Book::getTitle)
+                .containsExactlyInAnyOrder(book1.getTitle(), book2.getTitle());
+    }
 }
