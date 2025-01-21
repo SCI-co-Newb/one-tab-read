@@ -19,6 +19,7 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -91,5 +92,23 @@ public class BookApplicationTests {
         assertThat(responseEntities.getBody())
                 .extracting(Book::getTitle)
                 .containsExactlyInAnyOrder(book1.getTitle(), book2.getTitle());
+    }
+
+    @Test
+    void shouldFindByIdAndUserId() {
+        Book book = new Book();
+        book.setTitle("shouldFindByIdAndUserId");
+
+        ResponseEntity<Void> postResponse = restTemplate.postForEntity("/users/{user_id}/books", book, Void.class, userId);
+
+        String location = Objects.requireNonNull(postResponse.getHeaders().getLocation()).getPath();
+        Long bookId = (Long) Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
+
+        ResponseEntity<Book> responseEntity = restTemplate.getForEntity("/users/{user_id}/books/{id}", Book.class, userId, bookId);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().getId()).isEqualTo(bookId);
+        assertThat(responseEntity.getBody().getTitle()).isEqualTo(book.getTitle());
     }
 }
