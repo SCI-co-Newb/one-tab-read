@@ -1,6 +1,7 @@
 package com.sahajdeepsingh.onetabread;
 
 import com.sahajdeepsingh.onetabread.model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,9 +20,17 @@ class UserApplicationTests {
     @Autowired
     TestRestTemplate restTemplate;
 
+    User newUser;
+
+    @AfterEach
+    void tearDown() {
+        restTemplate.delete("/users/deleteUser?requestedUsername={username}&requestedPassword={password}",
+                newUser.getUsername(), newUser.getPassword());
+    }
+
     @Test
     void shouldCreateUser() {
-        User newUser = new User();
+        newUser = new User();
         newUser.setUsername("adminCreate");
         newUser.setPassword("adminCreate");
         ResponseEntity<Void> responseEntity = restTemplate.postForEntity("/users", newUser, Void.class);
@@ -35,7 +44,7 @@ class UserApplicationTests {
 
     @Test
     void shouldFindUserById() {
-        User newUser = new User();
+        newUser = new User();
         newUser.setUsername("adminFindById");
         newUser.setPassword("adminFindById");
         ResponseEntity<Void> postResponse = restTemplate.postForEntity("/users", newUser, Void.class);
@@ -50,7 +59,7 @@ class UserApplicationTests {
 
     @Test
     void shouldFindUserByUsernameAndPassword() {
-        User newUser = new User();
+        newUser = new User();
         newUser.setUsername("adminFindByUsername");
         newUser.setPassword("adminFindByUsername");
         restTemplate.postForEntity("/users", newUser, Void.class);
@@ -66,7 +75,7 @@ class UserApplicationTests {
 
     @Test
     void shouldUpdateUser() {
-        User newUser = new User();
+        newUser = new User();
         newUser.setUsername("adminUpdate");
         newUser.setPassword("adminUpdate");
         ResponseEntity<Void> postResponse = restTemplate.postForEntity("/users", newUser, Void.class);
@@ -90,7 +99,7 @@ class UserApplicationTests {
 
     @Test
     void shouldDeleteUser() {
-        User newUser = new User();
+        newUser = new User();
         newUser.setUsername("adminDelete");
         newUser.setPassword("adminDelete");
         ResponseEntity<Void> postResponse = restTemplate.postForEntity("/users", newUser, Void.class);
