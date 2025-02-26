@@ -2,6 +2,7 @@ package com.sahajdeepsingh.onetabread.service;
 
 import com.sahajdeepsingh.onetabread.model.User;
 import com.sahajdeepsingh.onetabread.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +16,11 @@ public class UserService {
 
     // POST method
     public User save(User user) {
-        return userRepository.save(user);
+        try{
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Username already exists");
+        }
     }
 
     // GET methods

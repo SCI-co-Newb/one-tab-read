@@ -64,8 +64,8 @@ class UserApplicationTests {
         newUser.setPassword("adminFindByUsername");
         restTemplate.postForEntity("/users", newUser, Void.class);
 
-        ResponseEntity<User> responseEntity = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
-                User.class, newUser.getUsername(), newUser.getPassword());
+        ResponseEntity<User> responseEntity = restTemplate.postForEntity("/users/findByUsernameAndPassword",
+                newUser, User.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();

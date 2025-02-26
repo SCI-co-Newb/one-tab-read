@@ -2,12 +2,15 @@ package com.sahajdeepsingh.onetabread.controller;
 
 import com.sahajdeepsingh.onetabread.model.User;
 import com.sahajdeepsingh.onetabread.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:3000") // Allow React frontend to access
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -35,18 +38,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/findByUsernameAndPassword")
-    public ResponseEntity<User> findByUsernameAndPassword(@RequestParam String requestedUsername,
-                                               @RequestParam String requestedPassword) {
-        User user = userService.findByUsernameAndPassword(requestedUsername, requestedPassword);
+    // since get requests pose a risk, post mappings does not show up on logs so no password leak
+    @PostMapping("/findByUsernameAndPassword")
+    public ResponseEntity<Map<String, String>> findByUsernameAndPassword(@RequestBody User user) {
+        User foundUser = userService.findByUsernameAndPassword(user.getUsername(), user.getPassword());
 
-        if (user != null) {
-            // 200 meaning OK user is found
-            return ResponseEntity.ok().body(user);
-        } else {
-            // 404 meaning not founds
-            return ResponseEntity.notFound().build();
+        if (foundUser != null) {
+            return ResponseEntity.ok(Map.of("message", "Login successful"));
         }
+
+        // Return JSON instead of plain text
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Invalid credentials"));
     }
 
     // probably make get methods to findbyusername and findbyusernameandpassword for different scenerios
