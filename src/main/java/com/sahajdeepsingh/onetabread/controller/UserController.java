@@ -40,14 +40,18 @@ public class UserController {
 
     // since get requests pose a risk, post mappings does not show up on logs so no password leak
     @PostMapping("/findByUsernameAndPassword")
-    public ResponseEntity<Map<String, String>> findByUsernameAndPassword(@RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> findByUsernameAndPassword(@RequestBody User user) {
         User foundUser = userService.findByUsernameAndPassword(user.getUsername(), user.getPassword());
 
         if (foundUser != null) {
-            return ResponseEntity.ok(Map.of("message", "Login successful"));
+            return ResponseEntity.ok(Map.of(
+                    "id", foundUser.getId(),
+                    "username", foundUser.getUsername(),
+                    "message", "Login successful"
+            ));
         }
 
-        // Return JSON instead of plain text
+        // Return JSON error instead of plain text
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", "Invalid credentials"));
     }

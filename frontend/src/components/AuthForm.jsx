@@ -2,7 +2,7 @@ import {useState} from "react";
 import Login from "./Login";
 import Signup from "./Signup";
 
-export default function AuthForm() {
+export default function AuthForm({ onLogin }) {
     const [isLoginVisible, setIsLoginVisible] = useState(false);
     const [isSignupVisible, setIsSignupVisible] = useState(false);
 
@@ -13,7 +13,7 @@ export default function AuthForm() {
         <div className="authForm">
             <button onClick={toggleLoginForm}>Login</button>
             {isLoginVisible && (
-                <Login />
+                <Login onLogin={onLogin} />
             )}
             <button onClick={toggleSignupForm}>Signup</button>
             {isSignupVisible && (

@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-export default function Login() {
+export default function Login({ onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
@@ -22,6 +22,7 @@ export default function Login() {
 
             if (response.ok) {
                 const data = await response.json();
+                onLogin({ id: data.id, username: data.username });
                 setMessage(data.message || `Welcome back ${username}!`);
             } else {
                 // Check if response has JSON or is empty
