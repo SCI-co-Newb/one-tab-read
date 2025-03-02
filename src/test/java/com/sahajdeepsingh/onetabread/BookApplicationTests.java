@@ -46,15 +46,15 @@ public class BookApplicationTests {
         restTemplate.delete("/users/deleteUser?requestedUsername={username}&requestedPassword={password}",
                 user.getUsername(), user.getPassword());
 
-        ResponseEntity<User> responseEntityUserDelete = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
-                User.class, user.getUsername(), user.getPassword());
+        ResponseEntity<User> responseEntityUserDelete = restTemplate.postForEntity("/users/findByUsernameAndPassword",
+                user, User.class);
 
         assertThat(responseEntityUserDelete.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
         restTemplate.postForEntity("/users", user, User.class);
 
-        ResponseEntity<User> responseEntityUser = restTemplate.getForEntity("/users/findByUsernameAndPassword?requestedUsername={username}&requestedPassword={password}",
-                User.class, user.getUsername(), user.getPassword());
+        ResponseEntity<User> responseEntityUser = restTemplate.postForEntity("/users/findByUsernameAndPassword",
+                user, User.class);
 
         assertThat(responseEntityUser.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntityUser.getBody()).isNotNull();

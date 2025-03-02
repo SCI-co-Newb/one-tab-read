@@ -39,6 +39,7 @@ public class UserController {
     }
 
     // since get requests pose a risk, post mappings does not show up on logs so no password leak
+    // probably combine with top method and only accept user object with post method
     @PostMapping("/findByUsernameAndPassword")
     public ResponseEntity<Map<String, Object>> findByUsernameAndPassword(@RequestBody User user) {
         User foundUser = userService.findByUsernameAndPassword(user.getUsername(), user.getPassword());

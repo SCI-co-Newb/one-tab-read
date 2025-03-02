@@ -9,6 +9,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+// replace user_id with user object, or something
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/users/{user_id}/books")
 public class BookController {
@@ -47,7 +49,7 @@ public class BookController {
     public ResponseEntity<List<Book>> getBooksByUserId(@PathVariable Long user_id) {
         List<Book> books = bookService.getBooksByUserId(user_id);
 
-        if(books != null) {
+        if(books != null && !books.isEmpty()) {
             return ResponseEntity.ok().body(books);
         } else {
             return ResponseEntity.notFound().build();

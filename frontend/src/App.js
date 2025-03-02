@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 
 import AuthForm from "./components/AuthForm";
+import Books from "./components/Books";
 
 function App() {
     const [user, setUser] = React.useState(null);
@@ -25,6 +26,7 @@ function App() {
             {isLoggedIn &&
                 <div className="logged-in">
                     <p>Welcome back, {user.username}!</p>
+                    <Books user={user} />
                     <button className="logout" onClick={handleLogout}>Logout</button>
                 </div>
             }
