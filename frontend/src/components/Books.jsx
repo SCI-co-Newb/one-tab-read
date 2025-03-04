@@ -7,6 +7,28 @@ export default function Books({user}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const handleDeleteBook = async (id) => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`http://localhost:8080/users/${user.id}/books/${id}`,
+                {method: "DELETE"});
+
+            if (!response.ok) {
+                console.error("Error: " + response);
+            }
+        } catch (error) {
+            setError(error.message)
+        } finally {
+            fetchBooks().catch((error) => {
+                // Optional: handle any errors from the async function
+                console.error("Error in fetching books:", error);
+            });
+            setLoading(false);
+        }
+    }
+
     const handleAddBook = async () => {
         setLoading(true);
         setError(null);
@@ -93,6 +115,7 @@ export default function Books({user}) {
                         <div
                             key={book.id}
                             style={{
+                                position: "relative",
                                 width: "180px",
                                 height: "280px",
                                 border: "2px solid #3498db",
@@ -109,6 +132,30 @@ export default function Books({user}) {
                                 overflowWrap: "break-word",
                             }}
                         >
+                            {/* Delete Button */}
+                            <button
+                                style={{
+                                    position: "absolute",
+                                    top: "5px",
+                                    right: "5px",
+                                    backgroundColor: "red",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "50%",
+                                    width: "25px",
+                                    height: "25px",
+                                    cursor: "pointer",
+                                    fontSize: "16px",
+                                    fontWeight: "bold",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                onClick={() => handleDeleteBook(book.id)}
+                            >
+                                ✕
+                            </button>
+
                             <h3
                                 style={{
                                     whiteSpace: "nowrap",
@@ -222,7 +269,6 @@ export default function Books({user}) {
                     </div>
 
                     {/*
-                        TODONE: Consider putting another book box for users to add a new book, done. Now add functionality.
                         TODO: Then, consider integrating the delete feature
                         TODO: After, consider separating Book into a separate component that Books can use
                         TODO: Finally, polishing up it up and start working on backend for links and history
