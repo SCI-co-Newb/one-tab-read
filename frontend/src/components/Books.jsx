@@ -29,6 +29,11 @@ export default function Books({user}) {
     }
 
     const handleAddBook = async () => {
+        if (!newBook || newBook.trim() === "") {
+            alert("Please enter a book title before adding.");
+            return;
+        }
+
         setLoading(true);
         setError(null);
 
@@ -38,13 +43,14 @@ export default function Books({user}) {
                 method: 'POST',
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
-                    title: newBook,
+                    title: newBook.trim(),
                     user_id: user.id,
                 })
             })
 
             if (response.ok) {
                 setIsAddingBook(false); // make sure to do it only when added
+                setNewBook("");
             } else {
                 console.error("Error Posting: " + response);
             }
@@ -104,9 +110,14 @@ export default function Books({user}) {
             <div
                 style={{
                     display: "flex",
+                    flexWrap: "wrap", // Allows books to wrap to the next line
                     gap: "20px",
                     justifyContent: "center",
+                    alignItems: "flex-start", // Aligns books properly in each row
+                    maxHeight: "600px", // Adjust based on your design needs
+                    overflowY: "auto", // Enables vertical scrolling
                     padding: "10px",
+
                 }}
             >
                 {books.map((book) => (
@@ -269,6 +280,7 @@ export default function Books({user}) {
                 </div>
 
                 {/*
+                    TODO: New problem found, deleting books on first line delete books on second line
                     TODO: After, consider separating Book into a separate component that Books can use
                     TODO: Finally, polishing up it up and start working on backend for links and history
                 */}
