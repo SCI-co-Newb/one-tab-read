@@ -3,6 +3,7 @@ package com.sahajdeepsingh.onetabread.service;
 import com.sahajdeepsingh.onetabread.model.Book;
 import com.sahajdeepsingh.onetabread.model.URIHistory;
 import com.sahajdeepsingh.onetabread.repository.URIHistoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +23,8 @@ public class URIHistoryService {
     }
 
     // GET methods
-
     public List<URIHistory> getURIHistoryByBookId(Long book_id) {
-        return uriHistoryRepository.findAllByBookId(book_id);
+        return uriHistoryRepository.findTop5ByBookIdOrderByVisitedAtDesc(book_id);
     }
 
     // DELETE method
@@ -33,11 +33,11 @@ public class URIHistoryService {
     }
 
     // PUT methods
-    public URIHistory updateURIHistory(URIHistory uriHistory) {
+    @Transactional
+    public URIHistory updateURIHistory(Long book_id, URIHistory uriHistory) {
         URIHistory uriHistoryToUpdate = uriHistoryRepository.findById(uriHistory.getId()).orElse(null);
-        if (uriHistoryToUpdate != null) {
+        if (uriHistoryToUpdate != null && uriHistoryToUpdate.getBook().getId().equals(book_id)) {
             uriHistoryToUpdate.setUri(uriHistory.getUri());
-            uriHistoryToUpdate.setBook(uriHistory.getBook());
             uriHistoryToUpdate.setVisitedAt(uriHistory.getVisitedAt());
             return uriHistoryRepository.save(uriHistoryToUpdate);
         }

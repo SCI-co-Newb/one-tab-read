@@ -73,15 +73,15 @@ public class UserController {
 
     // update user in database based on changes to user in code
     @PutMapping("/updateUser")
-    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         if (user == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
 
         User savedUser = userService.updateUser(user);
 
         if (savedUser != null) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(savedUser);
         } else {
             return ResponseEntity.notFound().build();
         }
