@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000") // Allow React frontend to access
 @RestController
@@ -40,5 +41,15 @@ public class URIHistoryController {
             return ResponseEntity.created(locationOfNewURIHistory).build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<URIHistory>> getURIHistoryByBookId(@PathVariable Long book_id) {
+        List<URIHistory> uriHistory = uriHistoryService.getURIHistoryByBookId(book_id);
+        if (uriHistory != null && !uriHistory.isEmpty()) {
+            return ResponseEntity.ok().body(uriHistory);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -5,6 +5,8 @@ import com.sahajdeepsingh.onetabread.model.URIHistory;
 import com.sahajdeepsingh.onetabread.repository.URIHistoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class URIHistoryService {
 
@@ -20,12 +22,9 @@ public class URIHistoryService {
     }
 
     // GET methods
-    public URIHistory findById(Long id) {
-        return uriHistoryRepository.findById(id).orElse(null);
-    }
 
-    public URIHistory findByUriAndBookId(String uri, Long book_id) {
-        return uriHistoryRepository.findByUriAndBookId(uri, book_id).orElse(null);
+    public List<URIHistory> getURIHistoryByBookId(Long book_id) {
+        return uriHistoryRepository.findAllByBookId(book_id);
     }
 
     // DELETE method
